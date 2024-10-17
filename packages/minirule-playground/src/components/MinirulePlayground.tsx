@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MonacoEditor from "react-monaco-editor";
 import { interpreter } from "minirule";
 import { configureMiniruleLanguage } from "../editor-language";
@@ -24,12 +24,13 @@ then
 end
 `;
 
-const DslPlayground: React.FC = () => {
-  const [input, setInput] = useState(defaultInput);
+const MinirulePlayground: React.FC = () => {
+  const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isInputValid, setIsInputValid] = useState(true);
   const [parsingTime, setParsingTime] = useState(0);
+  const initialInputRef = useRef<string | null>(null);
 
   const editorDidMount = (editor: any, monaco: any) => {
     editor.focus();
@@ -68,6 +69,50 @@ const DslPlayground: React.FC = () => {
 
     if (parsingTime > 0) {
       setParsingTime(0);
+    }
+  }, [input]);
+
+  const getInitialInput = () => {
+    const params = new URLSearchParams(window.location.search);
+    const inputParam = params.get("input");
+
+    const urlSafeatob = (str: string) => {
+      str = str.replace(/-/g, "+").replace(/_/g, "/");
+      while (str.length % 4) str += "=";
+      return atob(str);
+    };
+
+    if (inputParam) {
+      try {
+        return urlSafeatob(inputParam);
+      } catch (e) {
+        console.error("Failed to decode input parameter:", e);
+      }
+    }
+    return defaultInput;
+  };
+
+  useEffect(() => {
+    if (initialInputRef.current === null) {
+      initialInputRef.current = getInitialInput();
+      setInput(initialInputRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    const urlSafebtoa = (str: string) => {
+      return btoa(str)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=/g, "");
+    };
+
+    if (input && input !== initialInputRef.current) {
+      const encodedInput = urlSafebtoa(input);
+      const newUrl = `${window.location.pathname}?input=${encodedInput}`;
+      window.history.replaceState({}, "", newUrl);
+    } else if (!input.trim()) {
+      window.history.replaceState({}, "", window.location.pathname);
     }
   }, [input]);
 
@@ -117,4 +162,4 @@ const DslPlayground: React.FC = () => {
   );
 };
 
-export default DslPlayground;
+export default MinirulePlayground;
