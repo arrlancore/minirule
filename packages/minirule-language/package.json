@@ -1,6 +1,6 @@
 {
   "name": "minirule",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple, readable business rule language for easy definition and interpretation.",
   "main": "dist/index.js",
   "module": "dist/index.js",
