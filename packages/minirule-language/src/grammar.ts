@@ -41,7 +41,9 @@ const To = createToken({
 const BusinessTerm = createToken({
   name: "BusinessTerm",
   pattern: new RegExp(
-    [keywords.discount, keywords.bonus].map((key) => `\\b${key}\\b`).join("|"),
+    [keywords.discount, keywords.bonus, keywords.fee]
+      .map((key) => `\\b${key}\\b`)
+      .join("|"),
     "i"
   ),
 });

@@ -10,6 +10,7 @@ export const keywords = {
   to: "TO",
   discount: "DISCOUNT",
   bonus: "BONUS",
+  fee: "FEE",
 };
 
 export const operators = [">", "<", "%"];

@@ -10,6 +10,7 @@ const keywords = [
   "TO",
   "DISCOUNT",
   "BONUS",
+  "FEE",
 ];
 export const operators = [">", "<", "%"];
 
