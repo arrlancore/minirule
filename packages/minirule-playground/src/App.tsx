@@ -49,8 +49,26 @@ const App: React.FC = () => {
               and use cases, from e-commerce to finance.
             </li>
           </ul>
-
-          {/* add developer section here and link to github for contribute */}
+          {/* Developer section */}
+          <div className="mt-12 border-t pt-8">
+            <h2 className="text-3xl font-semibold mb-4 text-gray-800">
+              For Developers
+            </h2>
+            <p className="text-lg mb-4">
+              Minirule is an open-source project and we welcome contributions
+              from the developer community. Whether you're interested in
+              improving the core functionality, adding new features, or
+              enhancing documentation, your input is valuable.
+            </p>
+            <a
+              href="https://github.com/arrlancore/minirule"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            >
+              Contribute on GitHub
+            </a>
+          </div>
         </div>
       </div>
     </div>
