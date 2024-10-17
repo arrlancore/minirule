@@ -64,7 +64,7 @@ For a hands-on experience, visit our [Minirule Playground](https://minirule.verc
 
 We welcome contributions to the Minirule library! If you have ideas for improvements or new features, feel free to open an issue or submit a pull request.
 
-[Please read the contributing guide.](https://github.com/arrlancore/minirule/blob/main/CONTRIBUTING.md)
+[Please read the contributing guide.](https://github.com/arrlancore/minirule/blob/main/CONTRIBUTING.MD)
 
 ### Coming Soon
 We will add more capability as the following:
