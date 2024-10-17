@@ -10,6 +10,7 @@
   },
 "scripts": {
     "postinstall": "lerna run build --scope=minirule",
+    "build": "yarn workspaces run build",
     "build:language": "lerna run build --scope=minirule",
     "build:playground": "lerna run build --scope=minirule-playground",
     "dev": "lerna run build --scope=minirule && lerna run start --scope=minirule-playground --stream",

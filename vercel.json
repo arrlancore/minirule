@@ -1,0 +1,4 @@
+{
+  "buildCommand": "yarn workspaces run build",
+  "outputDirectory": "packages/minirule-playground/build"
+}
