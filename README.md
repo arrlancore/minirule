@@ -50,7 +50,7 @@ try {
 
 ### Playground
 
-For a hands-on experience, visit our [Minirule Playground](#) where you can write, validate, and interpret your business rules in real-time. The playground provides an interactive environment to experiment with Minirule without any setup.
+For a hands-on experience, visit our [Minirule Playground](https://minirule.vercel.app/) where you can write, validate, and interpret your business rules in real-time. The playground provides an interactive environment to experiment with Minirule without any setup.
 
 ## Benefits
 
