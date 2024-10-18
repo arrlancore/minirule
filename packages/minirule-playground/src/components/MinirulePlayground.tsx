@@ -129,17 +129,35 @@ const MinirulePlayground: React.FC = () => {
           editorWillMount={editorWillMount}
           language="minirule"
         />
-        <button
-          className={`mt-2 px-4 py-2 bg-blue-500 text-white rounded ${
-            !isInputValid
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-blue-600"
-          }`}
-          disabled={!isInputValid}
-          onClick={handleParse}
-        >
-          Make JSON
-        </button>
+        <div className="flex gap-4">
+          <button
+            className={`mt-2 px-4 py-2 bg-blue-500 text-white rounded ${
+              !isInputValid
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-600"
+            }`}
+            disabled={!isInputValid}
+            onClick={handleParse}
+          >
+            Make JSON
+          </button>
+          {/* create button to copy link share url, use secondary color */}
+          <button
+            onClick={() => {
+              const text = window.location.href;
+              navigator.clipboard.writeText(text);
+              alert("Link copied to clipboard!");
+            }}
+            disabled={!isInputValid}
+            className={`mt-2 px-4 py-2 bg-slate-500 text-white rounded ${
+              !isInputValid
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-slate-600"
+            }`}
+          >
+            Copy Link
+          </button>
+        </div>
 
         {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
         {parsingTime > 0 && (
