@@ -60,7 +60,37 @@ class Interpreter {
   }
 
   private visitWhenClause(ctx: any) {
-    return ctx.children.condition.map(this.visitCondition.bind(this));
+    return this.visitOrExpression(ctx.children.orExpression[0]);
+  }
+
+  private visitOrExpression(ctx: any) {
+    const andExpressions = ctx.children.andExpression.map(
+      this.visitAndExpression.bind(this)
+    );
+
+    if (andExpressions.length === 1) {
+      return andExpressions[0];
+    }
+
+    return {
+      type: "or",
+      expressions: andExpressions,
+    };
+  }
+
+  private visitAndExpression(ctx: any) {
+    const conditions = ctx.children.condition.map(
+      this.visitCondition.bind(this)
+    );
+
+    if (conditions.length === 1) {
+      return conditions[0];
+    }
+
+    return {
+      type: "and",
+      expressions: conditions,
+    };
   }
 
   private visitCondition(ctx: any) {

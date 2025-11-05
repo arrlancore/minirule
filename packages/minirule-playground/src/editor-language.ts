@@ -6,6 +6,7 @@ const keywords = [
   "IS",
   "BETWEEN",
   "AND",
+  "OR",
   "APPLY",
   "TO",
   "DISCOUNT",

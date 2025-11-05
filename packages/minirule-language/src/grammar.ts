@@ -30,6 +30,10 @@ const And = createToken({
   name: "And",
   pattern: new RegExp(`\\b${keywords.and}\\b`, "i"),
 });
+const Or = createToken({
+  name: "Or",
+  pattern: new RegExp(`\\b${keywords.or}\\b`, "i"),
+});
 const Apply = createToken({
   name: "Apply",
   pattern: new RegExp(`\\b${keywords.apply}\\b`, "i"),
@@ -88,6 +92,7 @@ const allTokens = [
   Is,
   Between,
   And,
+  Or,
   Apply,
   To,
   Define,
@@ -127,9 +132,22 @@ class RuleParser extends CstParser {
 
   private whenClause = this.RULE("whenClause", () => {
     this.CONSUME(When);
-    this.MANY_SEP({
-      SEP: And,
-      DEF: () => this.SUBRULE(this.condition),
+    this.SUBRULE(this.orExpression);
+  });
+
+  private orExpression = this.RULE("orExpression", () => {
+    this.SUBRULE(this.andExpression);
+    this.MANY(() => {
+      this.CONSUME(Or);
+      this.SUBRULE2(this.andExpression);
+    });
+  });
+
+  private andExpression = this.RULE("andExpression", () => {
+    this.SUBRULE(this.condition);
+    this.MANY(() => {
+      this.CONSUME(And);
+      this.SUBRULE2(this.condition);
     });
   });
 
