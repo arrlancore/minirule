@@ -1,0 +1,136 @@
+// Comprehensive Minirule Example
+// This example demonstrates all currently supported features:
+// - DEFINE keyword for reusable terms
+// - OR and AND logical operators with proper precedence
+// - BETWEEN for range checks
+// - Comparison operators (>, <, IS)
+// - Multiple business terms (DISCOUNT, BONUS, FEE)
+// - Complex conditional logic
+
+// ============================================
+// DEFINE SECTION: Reusable Business Terms
+// ============================================
+
+// Define customer tier thresholds
+DEFINE premium_threshold AS 5000
+DEFINE vip_threshold AS 10000
+DEFINE gold_status AS "gold"
+DEFINE platinum_status AS "platinum"
+DEFINE holiday_season_start AS "2024-11-01"
+DEFINE holiday_season_end AS "2024-12-31"
+DEFINE minimum_order AS 100
+
+// ============================================
+// RULE 1: VIP Customer Exclusive Discount
+// ============================================
+// Uses: DEFINE references, OR operator, > operator, IS operator
+RULE "VIP Customer Exclusive Discount"
+WHEN customer.status IS platinum_status
+  OR customer.lifetime_value > vip_threshold
+THEN apply 20% discount TO order.total
+END
+
+// ============================================
+// RULE 2: Holiday Season Premium Member Bonus
+// ============================================
+// Uses: DEFINE references, BETWEEN, AND, OR operators
+RULE "Holiday Season Premium Member Bonus"
+WHEN order.date IS BETWEEN holiday_season_start AND holiday_season_end
+  AND order.total > premium_threshold
+  AND customer.status IS gold_status
+  OR customer.status IS platinum_status
+THEN apply 15% bonus TO customer.loyalty_points
+END
+
+// ============================================
+// RULE 3: New Customer Welcome Discount
+// ============================================
+// Uses: Multiple AND conditions, < operator, > operator
+RULE "New Customer Welcome Discount"
+WHEN customer.order_count < 3
+  AND order.total > minimum_order
+  AND customer.registration_year IS "2024"
+THEN apply 10% discount TO order.total
+END
+
+// ============================================
+// RULE 4: Bulk Purchase Discount
+// ============================================
+// Uses: OR with multiple > conditions, complex logic
+RULE "Bulk Purchase Discount"
+WHEN order.item_count > 10
+  OR order.total > 1000
+  AND customer.type IS "business"
+THEN apply 12% discount TO order.total
+END
+
+// ============================================
+// RULE 5: Low Value Order Processing Fee
+// ============================================
+// Uses: < operator, FEE business term, AND operator
+RULE "Low Value Order Processing Fee"
+WHEN order.total < 50
+  AND customer.status IS "standard"
+  AND order.shipping_country IS "international"
+THEN apply 5% fee TO order.total
+END
+
+// ============================================
+// RULE 6: Loyalty Tier Upgrade Bonus
+// ============================================
+// Uses: DEFINE references, BETWEEN, complex AND/OR logic
+RULE "Loyalty Tier Upgrade Bonus"
+WHEN customer.lifetime_value IS BETWEEN premium_threshold AND vip_threshold
+  AND customer.current_year_purchases > 3000
+  OR customer.referral_count > 5
+THEN apply 500 bonus TO customer.loyalty_points
+END
+
+// ============================================
+// RULE 7: Flash Sale Multi-Condition
+// ============================================
+// Uses: Multiple OR and AND conditions, demonstrating precedence
+// Evaluates as: (A AND B) OR (C AND D) due to AND having higher precedence
+RULE "Flash Sale Multi-Condition"
+WHEN customer.email_subscriber IS "yes"
+  AND order.category IS "electronics"
+  OR customer.app_user IS "yes"
+  AND order.total > 200
+THEN apply 18% discount TO order.total
+END
+
+// ============================================
+// RULE 8: Regional Shipping Discount
+// ============================================
+// Uses: String comparison, AND/OR combinations, DEFINE reference
+RULE "Regional Shipping Discount"
+WHEN order.shipping_country IS "US"
+  OR order.shipping_country IS "CA"
+  AND order.total > minimum_order
+THEN apply 25 discount TO order.shipping_cost
+END
+
+// ============================================
+// RULE 9: Birthday Month Special
+// ============================================
+// Uses: BETWEEN for date range, multiple conditions
+RULE "Birthday Month Special"
+WHEN customer.birth_month IS BETWEEN "01" AND "12"
+  AND order.month IS customer.birth_month
+  AND customer.opted_in_birthday_offers IS "yes"
+THEN apply 15% discount TO order.total
+END
+
+// ============================================
+// RULE 10: Complex Multi-Tier Loyalty Program
+// ============================================
+// Uses: All features combined - DEFINE, OR, AND, >, <, BETWEEN, IS
+RULE "Complex Multi-Tier Loyalty Program"
+WHEN customer.lifetime_value IS BETWEEN premium_threshold AND vip_threshold
+  AND customer.status IS gold_status
+  OR customer.status IS platinum_status
+  AND order.total > 500
+  OR order.item_count > 5
+  AND customer.active_years > 2
+THEN apply 500 bonus TO customer.loyalty_points
+END

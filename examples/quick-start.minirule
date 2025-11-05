@@ -1,0 +1,83 @@
+// Quick Start Example
+// A simple e-commerce discount system demonstrating the basics
+
+// ============================================
+// Step 1: Define reusable values
+// ============================================
+
+DEFINE minimum_purchase AS 100
+DEFINE gold_tier AS "gold"
+DEFINE silver_tier AS "silver"
+
+// ============================================
+// Step 2: Simple rule with one condition
+// ============================================
+
+RULE "First Time Buyer Discount"
+WHEN customer.order_count < 1
+THEN apply 10% discount TO order.total
+END
+
+// ============================================
+// Step 3: Rule with AND operator
+// ============================================
+
+RULE "Large Order Discount"
+WHEN order.total > minimum_purchase
+  AND customer.status IS gold_tier
+THEN apply 15% discount TO order.total
+END
+
+// ============================================
+// Step 4: Rule with OR operator
+// ============================================
+
+RULE "Premium Member Discount"
+WHEN customer.status IS gold_tier
+  OR customer.lifetime_value > 5000
+THEN apply 20% discount TO order.total
+END
+
+// ============================================
+// Step 5: Rule with BETWEEN for ranges
+// ============================================
+
+RULE "Holiday Season Special"
+WHEN order.date IS BETWEEN "2024-11-01" AND "2024-12-31"
+  AND order.total > 50
+THEN apply 25% discount TO order.total
+END
+
+// ============================================
+// Step 6: Using BONUS instead of DISCOUNT
+// ============================================
+
+RULE "Loyalty Points Bonus"
+WHEN order.total > 200
+  AND customer.status IS gold_tier
+  OR customer.status IS silver_tier
+THEN apply 100 bonus TO customer.loyalty_points
+END
+
+// ============================================
+// Step 7: Using FEE for additional charges
+// ============================================
+
+RULE "Small Order Fee"
+WHEN order.total < 25
+  AND order.shipping_type IS "express"
+THEN apply 5 fee TO order.total
+END
+
+// ============================================
+// Step 8: Complex logic with AND and OR
+// ============================================
+// Note: AND has higher precedence than OR
+// This reads as: (new customer AND big order) OR (gold member)
+
+RULE "Special Combo Offer"
+WHEN customer.order_count < 5
+  AND order.total > 200
+  OR customer.status IS gold_tier
+THEN apply 18% discount TO order.total
+END
