@@ -47,6 +47,14 @@ const BusinessTerm = createToken({
     "i"
   ),
 });
+const Define = createToken({
+  name: "Define",
+  pattern: new RegExp(`\\b${keywords.define}\\b`, "i"),
+});
+const As = createToken({
+  name: "As",
+  pattern: new RegExp(`\\b${keywords.as}\\b`, "i"),
+});
 const StringLiteral = createToken({
   name: "StringLiteral",
   pattern: tokens.stringPattern,
@@ -82,6 +90,8 @@ const allTokens = [
   And,
   Apply,
   To,
+  Define,
+  As,
   BusinessTerm,
   Identifier,
   StringLiteral,
@@ -100,6 +110,9 @@ class RuleParser extends CstParser {
 
   public rules = this.RULE("rules", () => {
     this.MANY(() => {
+      this.SUBRULE(this.defineClause);
+    });
+    this.MANY2(() => {
       this.SUBRULE(this.rule);
     });
   });
@@ -135,19 +148,52 @@ class RuleParser extends CstParser {
       {
         ALT: () => {
           this.CONSUME1(Is);
-          this.CONSUME3(StringLiteral);
+          this.OR2([
+            {
+              ALT: () => {
+                this.CONSUME3(StringLiteral);
+              },
+            },
+            {
+              ALT: () => {
+                this.CONSUME1(Identifier);
+              },
+            },
+          ]);
         },
       },
       {
         ALT: () => {
           this.CONSUME(GreaterThan);
-          this.CONSUME1(NumberLiteral);
+          this.OR3([
+            {
+              ALT: () => {
+                this.CONSUME1(NumberLiteral);
+              },
+            },
+            {
+              ALT: () => {
+                this.CONSUME2(Identifier);
+              },
+            },
+          ]);
         },
       },
       {
         ALT: () => {
           this.CONSUME(LessThan);
-          this.CONSUME2(NumberLiteral);
+          this.OR4([
+            {
+              ALT: () => {
+                this.CONSUME2(NumberLiteral);
+              },
+            },
+            {
+              ALT: () => {
+                this.CONSUME3(Identifier);
+              },
+            },
+          ]);
         },
       },
     ]);
@@ -161,6 +207,29 @@ class RuleParser extends CstParser {
     this.CONSUME(BusinessTerm);
     this.CONSUME(To);
     this.CONSUME(Identifier);
+  });
+
+  private defineClause = this.RULE("defineClause", () => {
+    this.CONSUME(Define);
+    this.CONSUME(Identifier);
+    this.CONSUME(As);
+    this.OR([
+      {
+        ALT: () => {
+          this.CONSUME(StringLiteral);
+        },
+      },
+      {
+        ALT: () => {
+          this.CONSUME(NumberLiteral);
+        },
+      },
+      {
+        ALT: () => {
+          this.CONSUME1(Identifier);
+        },
+      },
+    ]);
   });
 }
 
