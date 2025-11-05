@@ -11,6 +11,8 @@ const keywords = [
   "DISCOUNT",
   "BONUS",
   "FEE",
+  "DEFINE",
+  "AS",
 ];
 export const operators = [">", "<", "%"];
 
@@ -21,7 +23,7 @@ export const tokens = {
   stringPattern: /"[^"]*"/,
   numberPattern: /\d+(\.\d+)?/,
   operatorPattern: new RegExp(operators.join("|")),
-  identifierPattern: /[a-zA-Z][a-zA-Z0-9.]*/,
+  identifierPattern: /[a-zA-Z][a-zA-Z0-9._]*/,
 };
 
 export const configureMiniruleLanguage = (monaco: any) => {

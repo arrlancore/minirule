@@ -1,6 +1,8 @@
 import { parser, lexer } from "./grammar.js";
 
 class Interpreter {
+  private definitions: Map<string, any> = new Map();
+
   interpret(input: string) {
     const lexResult = lexer.tokenize(input);
     parser.input = lexResult.tokens;
@@ -9,6 +11,9 @@ class Interpreter {
     if (parser.errors.length > 0) {
       throw new Error("Parsing errors detected");
     }
+
+    // Reset definitions for each interpretation
+    this.definitions.clear();
 
     return this.visitRules(cst);
   }
@@ -28,7 +33,18 @@ class Interpreter {
   }
 
   private visitRules(ctx: any) {
-    return ctx.children.rule.map(this.visitRule.bind(this));
+    const defines = ctx.children.defineClause
+      ? ctx.children.defineClause.map(this.visitDefineClause.bind(this))
+      : [];
+
+    const rules = ctx.children.rule
+      ? ctx.children.rule.map(this.visitRule.bind(this))
+      : [];
+
+    return {
+      definitions: defines,
+      rules: rules,
+    };
   }
 
   private visitRule(ctx: any) {
@@ -57,22 +73,44 @@ class Interpreter {
         end: ctx.children.StringLiteral[1].image.slice(1, -1),
       };
     } else if (ctx.children.Is) {
+      let value: any;
+      if (ctx.children.StringLiteral) {
+        value = ctx.children.StringLiteral[0].image.slice(1, -1);
+      } else if (ctx.children.Identifier[1]) {
+        // Reference to a defined term
+        const refName = ctx.children.Identifier[1].image;
+        value = this.definitions.get(refName) ?? refName;
+      }
       return {
         type: "is",
         field,
-        value: ctx.children.StringLiteral[0].image.slice(1, -1),
+        value,
       };
     } else if (ctx.children.GreaterThan) {
+      let value: any;
+      if (ctx.children.NumberLiteral && ctx.children.NumberLiteral[0]) {
+        value = Number(ctx.children.NumberLiteral[0].image);
+      } else if (ctx.children.Identifier[1]) {
+        const refName = ctx.children.Identifier[1].image;
+        value = this.definitions.get(refName) ?? refName;
+      }
       return {
         type: "greaterThan",
         field: field,
-        value: Number(ctx.children.NumberLiteral[0].image),
+        value,
       };
     } else if (ctx.children.LessThan) {
+      let value: any;
+      if (ctx.children.NumberLiteral && ctx.children.NumberLiteral[1]) {
+        value = Number(ctx.children.NumberLiteral[1].image);
+      } else if (ctx.children.Identifier[1]) {
+        const refName = ctx.children.Identifier[1].image;
+        value = this.definitions.get(refName) ?? refName;
+      }
       return {
         type: "lessThan",
         field: field,
-        value: Number(ctx.children.NumberLiteral[0].image),
+        value,
       };
     }
   }
@@ -85,6 +123,29 @@ class Interpreter {
       }`,
       amount: Number(ctx.children.NumberLiteral[0].image),
       field: ctx.children.Identifier[0].image,
+    };
+  }
+
+  private visitDefineClause(ctx: any) {
+    const name = ctx.children.Identifier[0].image;
+    let value: any;
+
+    if (ctx.children.StringLiteral) {
+      value = ctx.children.StringLiteral[0].image.slice(1, -1);
+    } else if (ctx.children.NumberLiteral) {
+      value = Number(ctx.children.NumberLiteral[0].image);
+    } else if (ctx.children.Identifier[1]) {
+      // Reference to another defined term
+      const refName = ctx.children.Identifier[1].image;
+      value = this.definitions.get(refName) ?? refName;
+    }
+
+    // Store in definitions map for later reference
+    this.definitions.set(name, value);
+
+    return {
+      name,
+      value,
     };
   }
 }

@@ -11,6 +11,8 @@ export const keywords = {
   discount: "DISCOUNT",
   bonus: "BONUS",
   fee: "FEE",
+  define: "DEFINE",
+  as: "AS",
 };
 
 export const operators = [">", "<", "%"];
@@ -28,9 +30,11 @@ export const tokens = {
     keywords.to,
     keywords.discount,
     keywords.bonus,
+    keywords.define,
+    keywords.as,
   ],
   stringPattern: /"[^"]*"/,
   numberPattern: /\d+(\.\d+)?/,
   operatorPattern: new RegExp(operators.join("|")),
-  identifierPattern: /[a-zA-Z][a-zA-Z0-9.]*/,
+  identifierPattern: /[a-zA-Z][a-zA-Z0-9._]*/,
 };
