@@ -1,1 +1,4 @@
 node_modules/
+package-lock.json
+test-define.js
+test-define-comprehensive.js
