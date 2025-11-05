@@ -2,19 +2,23 @@
   "name": "minirule",
   "version": "1.0.1",
   "description": "Simple, readable business rule language for easy definition and interpretation.",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc -w",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build:watch": "tsup src/index.ts --format esm,cjs --dts --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
     "dist"
   ],
-  "keywords": ["minirule", "business rules", "rule engine"],
+  "keywords": [
+    "minirule",
+    "business rules",
+    "rule engine"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,12 +28,14 @@
     "@types/node": "^22.7.5",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.6.3"
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
-}
+  }
 }
